@@ -26,6 +26,8 @@ Vollbild-Countdown auf dem Beamer – Steuerung bequem am eigenen Bildschirm.
 
 <p align="center"><sub>Break Display (oben), Control Center mit Dashboard und Design Editor (unten)</sub></p>
 
+<p align="center">▶️ <a href="docs/video/breaktimer-reel-916.mp4"><b>Showreel ansehen</b></a> <sub>(15 s, 9:16)</sub></p>
+
 ---
 
 ## Was ist Break Timer?
