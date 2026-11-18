@@ -1,0 +1,104 @@
+<!--
+    Copyright 2026 Petre Hoffmann
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<UserControl x:Class="BreakTimer.App.Views.AboutView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:c="clr-namespace:BreakTimer.App.Views.Controls">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,0,6,0">
+        <StackPanel MaxWidth="820" HorizontalAlignment="Left">
+            <Border Style="{StaticResource Card}" Padding="32">
+                <StackPanel Orientation="Horizontal">
+                    <c:BrandMark Width="110" Height="110"/>
+                    <StackPanel Margin="28,0,0,0" VerticalAlignment="Center">
+                        <TextBlock Text="Break Timer" FontSize="38" FontWeight="SemiBold" Foreground="White"/>
+                        <TextBlock Text="{Binding Version}" Style="{StaticResource Dim}" Margin="0,2,0,8"/>
+                        <TextBlock Text="Professionelle Pausenanzeige und Multi-Monitor-Steuerung für Schulungen, Seminare und Workshops." TextWrapping="Wrap" MaxWidth="520"/>
+                        <TextBlock Text="{Binding DevelopedBy}" FontWeight="SemiBold" Margin="0,14,0,0"/>
+                        <TextBlock Text="{Binding Copyright}" Style="{StaticResource Dim}" FontSize="12" Margin="0,2,0,0"/>
+                        <Button Content="GitHub-Repository" HorizontalAlignment="Left" Margin="0,10,0,0"
+                                Command="{Binding OpenRepositoryCommand}" ToolTip="{Binding RepositoryUrl}">
+                            <Button.Style>
+                                <Style TargetType="Button" BasedOn="{StaticResource ChipButton}">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers><DataTrigger Binding="{Binding HasRepository}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource Card}" Margin="0,18,0,0">
+                <StackPanel>
+                    <TextBlock Text="Tastenkürzel (im Control Center)" Style="{StaticResource H2}" Margin="0,0,0,10"/>
+                    <ItemsControl ItemsSource="{Binding Shortcuts}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0,5">
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="130"/><ColumnDefinition/></Grid.ColumnDefinitions>
+                                    <Border Background="{StaticResource Surface3Brush}" CornerRadius="7" Padding="10,3" HorizontalAlignment="Left">
+                                        <TextBlock Text="{Binding Key}" FontWeight="SemiBold" FontSize="13"/>
+                                    </Border>
+                                    <TextBlock Grid.Column="1" Text="{Binding Value}" VerticalAlignment="Center"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <TextBlock Text="Die Kürzel (außer Strg + Alt + B) wirken nur, wenn das Control Center aktiv ist und kein Eingabefeld den Fokus hat. Esc beendet die Pause auch im Display und in der Mini-Steuerung." Style="{StaticResource Dim}" FontSize="12" Margin="0,10,0,0" TextWrapping="Wrap"/>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource Card}" Margin="0,18,0,0">
+                <StackPanel>
+                    <TextBlock Text="Lizenz und Abhängigkeiten" Style="{StaticResource H2}" Margin="0,0,0,10"/>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding OwnLicenseText}" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                        <Button Content="Lizenz" Style="{StaticResource ChipButton}" Command="{Binding OpenUrlCommand}" CommandParameter="{Binding OwnLicenseUrl}"/>
+                    </StackPanel>
+                    <TextBlock Text="Break Timer verwendet folgende Komponenten von Drittanbietern:" Style="{StaticResource Dim}" Margin="0,14,0,6"/>
+                    <ItemsControl ItemsSource="{Binding Dependencies}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="{StaticResource Surface3Brush}" CornerRadius="10" Padding="14,10" Margin="0,0,0,8">
+                                    <DockPanel>
+                                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center" Margin="12,0,0,0">
+                                            <Button Content="Projekt" Style="{StaticResource ChipButton}" Margin="0,0,8,0" Command="{Binding DataContext.OpenUrlCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding ProjectUrl}" ToolTip="{Binding ProjectUrl}"/>
+                                            <Button Content="Lizenz" Style="{StaticResource ChipButton}" Command="{Binding DataContext.OpenUrlCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding LicenseUrl}" ToolTip="{Binding LicenseUrl}"/>
+                                        </StackPanel>
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding Title}" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                                            <TextBlock Text="{Binding License, StringFormat=Lizenz: {0}}" Style="{StaticResource Dim}" FontSize="12"/>
+                                            <TextBlock Text="{Binding Purpose}" Style="{StaticResource Dim}" FontSize="12" TextWrapping="Wrap"/>
+                                        </StackPanel>
+                                    </DockPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource Card}" Margin="0,18,0,0">
+                <StackPanel>
+                    <TextBlock Text="Technik" Style="{StaticResource H2}" Margin="0,0,0,10"/>
+                    <TextBlock Text=".NET Framework 4.8 · WPF · MVVM · JSON-Konfiguration" Style="{StaticResource Dim}"/>
+                    <TextBlock Text="Datenordner" Style="{StaticResource Caption}" Margin="0,12,0,2"/>
+                    <TextBlock Text="{Binding DataFolder}" TextWrapping="Wrap"/>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

@@ -1,0 +1,173 @@
+<!--
+    Copyright 2026 Petre Hoffmann
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<d:DisplayControlBase x:Class="BreakTimer.App.Views.Display.BreakScreenView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:cv="clr-namespace:BreakTimer.App.Converters"
+             xmlns:c="clr-namespace:BreakTimer.App.Views.Controls"
+             xmlns:d="clr-namespace:BreakTimer.App.Views.Display"
+             IsHitTestVisible="False" Focusable="False" UseLayoutRounding="False">
+    <d:DisplayControlBase.Resources>
+        <cv:HexColorConverter x:Key="Hex"/>
+        <cv:VisibilityConverter x:Key="Vis"/>
+        <cv:ProductMultiConverter x:Key="Product"/>
+        <cv:PaddingMultiConverter x:Key="Pad"/>
+    </d:DisplayControlBase.Resources>
+
+    <Grid ClipToBounds="True" Background="Black">
+        <!-- Hintergrundebene (Farbe, Verlauf, Bild, Lichter, Partikel) -->
+        <d:BackgroundView/>
+
+        <!-- Inhalt auf fester 16:9-Zeichenfläche, wird auf jede Auflösung skaliert -->
+        <Viewbox Stretch="Uniform">
+            <Grid Width="1920" Height="1080">
+
+                <!-- Lottie-Animation hinter Grafik, Texten und Countdown -->
+                <d:LottieView Layer="Behind"/>
+
+                <!-- Grafikbereich -->
+                <d:IllustrationView x:Name="Illustration" VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5"
+                                    HorizontalAlignment="{Binding Theme.IllustrationPosition}"
+                                    Opacity="{Binding Theme.IllustrationOpacity}"
+                                    Visibility="{Binding Theme.ShowIllustration, Converter={StaticResource Vis}}">
+                    <d:IllustrationView.Margin>
+                        <MultiBinding Converter="{StaticResource Pad}" ConverterParameter="h">
+                            <Binding Path="Theme.HorizontalPadding"/><Binding Path="Theme.VerticalPadding"/>
+                        </MultiBinding>
+                    </d:IllustrationView.Margin>
+                    <d:IllustrationView.Width>
+                        <MultiBinding Converter="{StaticResource Product}" ConverterParameter="760">
+                            <Binding Path="Theme.IllustrationScale"/>
+                        </MultiBinding>
+                    </d:IllustrationView.Width>
+                    <d:IllustrationView.Height>
+                        <MultiBinding Converter="{StaticResource Product}" ConverterParameter="760">
+                            <Binding Path="Theme.IllustrationScale"/>
+                        </MultiBinding>
+                    </d:IllustrationView.Height>
+                    <d:IllustrationView.RenderTransform>
+                        <TranslateTransform X="{Binding Theme.IllustrationOffsetX}" Y="{Binding Theme.IllustrationOffsetY}"/>
+                    </d:IllustrationView.RenderTransform>
+                </d:IllustrationView>
+
+                <!-- Header: Logo, Firmenname, Slogan -->
+                <Border x:Name="HeaderHost" VerticalAlignment="Top" HorizontalAlignment="{Binding Theme.HeaderPosition}"
+                        Visibility="{Binding Theme.ShowHeader, Converter={StaticResource Vis}}">
+                    <Border.Padding>
+                        <MultiBinding Converter="{StaticResource Pad}">
+                            <Binding Path="Theme.HorizontalPadding"/><Binding Path="Theme.VerticalPadding"/>
+                        </MultiBinding>
+                    </Border.Padding>
+                    <Border.LayoutTransform>
+                        <ScaleTransform ScaleX="{Binding Theme.HeaderScale}" ScaleY="{Binding Theme.HeaderScale}"/>
+                    </Border.LayoutTransform>
+                    <DockPanel LastChildFill="True">
+                        <ContentControl x:Name="LogoHost" Margin="0,0,22,0" VerticalAlignment="Center" Focusable="False"/>
+                        <StackPanel x:Name="HeaderText" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding Theme.CompanyName}" FontFamily="{Binding Theme.HeadingFont}" FontWeight="SemiBold" FontSize="40"
+                                       Foreground="{Binding Theme.HeadingColor, Converter={StaticResource Hex}}"
+                                       Visibility="{Binding Theme.CompanyName, Converter={StaticResource Vis}}"/>
+                            <TextBlock Text="{Binding Theme.Slogan}" FontFamily="{Binding Theme.BodyFont}" FontSize="24" Margin="0,2,0,0"
+                                       Foreground="{Binding Theme.AccentColor, Converter={StaticResource Hex}}"
+                                       Visibility="{Binding Theme.Slogan, Converter={StaticResource Vis}}"/>
+                        </StackPanel>
+                    </DockPanel>
+                </Border>
+
+                <!-- Hauptbereich -->
+                <StackPanel x:Name="MainPanel" VerticalAlignment="Center" HorizontalAlignment="{Binding Theme.TextAlignment}" RenderTransformOrigin="0.5,0.5">
+                    <StackPanel.Margin>
+                        <MultiBinding Converter="{StaticResource Pad}" ConverterParameter="h">
+                            <Binding Path="Theme.HorizontalPadding"/><Binding Path="Theme.VerticalPadding"/>
+                        </MultiBinding>
+                    </StackPanel.Margin>
+                    <StackPanel.LayoutTransform>
+                        <ScaleTransform ScaleX="{Binding Theme.MainScale}" ScaleY="{Binding Theme.MainScale}"/>
+                    </StackPanel.LayoutTransform>
+
+                    <TextBlock x:Name="Heading" Text="{Binding HeadingText}" TextWrapping="Wrap" MaxWidth="1640" RenderTransformOrigin="0.5,0.5"
+                               FontFamily="{Binding Theme.HeadingFont}" FontSize="{Binding Theme.HeadingSize}" FontWeight="{Binding Theme.HeadingWeight}"
+                               TextAlignment="{Binding Theme.TextAlignment}"
+                               Foreground="{Binding Theme.HeadingColor, Converter={StaticResource Hex}}"
+                               Visibility="{Binding HeadingText, Converter={StaticResource Vis}}">
+                        <TextBlock.RenderTransform><ScaleTransform x:Name="HeadingScale" ScaleX="1" ScaleY="1"/></TextBlock.RenderTransform>
+                        <TextBlock.LineStackingStrategy>BlockLineHeight</TextBlock.LineStackingStrategy>
+                        <TextBlock.LineHeight>
+                            <MultiBinding Converter="{StaticResource Product}"><Binding Path="Theme.HeadingSize"/><Binding Path="Theme.LineSpacing"/></MultiBinding>
+                        </TextBlock.LineHeight>
+                    </TextBlock>
+
+                    <TextBlock Text="{Binding Theme.BreakText}" TextWrapping="Wrap" MaxWidth="1500" Margin="0,6,0,0"
+                               FontFamily="{Binding Theme.BodyFont}" FontWeight="{Binding Theme.BodyWeight}"
+                               TextAlignment="{Binding Theme.TextAlignment}" Opacity="0.85"
+                               Foreground="{Binding Theme.TextColor, Converter={StaticResource Hex}}">
+                        <TextBlock.FontSize>
+                            <MultiBinding Converter="{StaticResource Product}" ConverterParameter="0.82"><Binding Path="Theme.BodySize"/></MultiBinding>
+                        </TextBlock.FontSize>
+                        <TextBlock.LineStackingStrategy>BlockLineHeight</TextBlock.LineStackingStrategy>
+                        <TextBlock.LineHeight>
+                            <MultiBinding Converter="{StaticResource Product}" ConverterParameter="0.82"><Binding Path="Theme.BodySize"/><Binding Path="Theme.LineSpacing"/></MultiBinding>
+                        </TextBlock.LineHeight>
+                        <TextBlock.Visibility>
+                            <Binding Path="Theme.BreakText" Converter="{StaticResource Vis}"/>
+                        </TextBlock.Visibility>
+                    </TextBlock>
+
+                    <TextBlock Text="{Binding EndTimeLine}" TextWrapping="Wrap" MaxWidth="1500" Margin="0,18,0,0"
+                               FontFamily="{Binding Theme.BodyFont}" FontWeight="{Binding Theme.BodyWeight}"
+                               TextAlignment="{Binding Theme.TextAlignment}"
+                               Foreground="{Binding Theme.AccentColor, Converter={StaticResource Hex}}"
+                               Visibility="{Binding EndTimeLine, Converter={StaticResource Vis}}">
+                        <TextBlock.FontSize>
+                            <MultiBinding Converter="{StaticResource Product}" ConverterParameter="1.12"><Binding Path="Theme.BodySize"/></MultiBinding>
+                        </TextBlock.FontSize>
+                    </TextBlock>
+
+                    <Viewbox Stretch="Uniform" StretchDirection="DownOnly" MaxWidth="1700" Margin="0,10,0,0" HorizontalAlignment="{Binding Theme.TextAlignment}">
+                        <c:CountdownControl x:Name="Countdown" Text="{Binding CountdownText}"
+                                            FontFamily="{Binding Theme.CountdownFont}" FontSize="{Binding Theme.CountdownSize}"
+                                            FontWeight="{Binding Theme.CountdownWeight}"
+                                            Foreground="{Binding Theme.CountdownColor, Converter={StaticResource Hex}}"
+                                            RenderTransformOrigin="0.5,0.5">
+                            <c:CountdownControl.RenderTransform>
+                                <TranslateTransform X="{Binding Theme.CountdownOffsetX}" Y="{Binding Theme.CountdownOffsetY}"/>
+                            </c:CountdownControl.RenderTransform>
+                        </c:CountdownControl>
+                    </Viewbox>
+                </StackPanel>
+
+                <!-- Footer -->
+                <Border x:Name="FooterHost" VerticalAlignment="Bottom" HorizontalAlignment="{Binding Theme.FooterPosition}"
+                        Visibility="{Binding Theme.ShowFooter, Converter={StaticResource Vis}}">
+                    <Border.Padding>
+                        <MultiBinding Converter="{StaticResource Pad}">
+                            <Binding Path="Theme.HorizontalPadding"/><Binding Path="Theme.VerticalPadding"/>
+                        </MultiBinding>
+                    </Border.Padding>
+                    <Border.LayoutTransform>
+                        <ScaleTransform ScaleX="{Binding Theme.FooterScale}" ScaleY="{Binding Theme.FooterScale}"/>
+                    </Border.LayoutTransform>
+                    <TextBlock Text="{Binding FooterLine}" FontSize="28" FontFamily="{Binding Theme.BodyFont}" TextWrapping="Wrap" MaxWidth="1500"
+                               Foreground="{Binding Theme.FooterColor, Converter={StaticResource Hex}}"
+                               Visibility="{Binding FooterLine, Converter={StaticResource Vis}}"/>
+                </Border>
+
+                <!-- Lottie-Animation vor allem -->
+                <d:LottieView Layer="Front"/>
+            </Grid>
+        </Viewbox>
+    </Grid>
+</d:DisplayControlBase>

@@ -1,0 +1,168 @@
+<!--
+    Copyright 2026 Petre Hoffmann
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<Window x:Class="BreakTimer.App.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:BreakTimer.App.ViewModels"
+        xmlns:v="clr-namespace:BreakTimer.App.Views"
+        xmlns:c="clr-namespace:BreakTimer.App.Views.Controls"
+        xmlns:cv="clr-namespace:BreakTimer.App.Converters"
+        Title="Break Timer – Control Center" Width="1320" Height="860" MinWidth="900" MinHeight="560"
+        Background="{StaticResource BgBrush}" Foreground="{StaticResource TextBrush}" FontFamily="Segoe UI" FontSize="14"
+        WindowStartupLocation="Manual" UseLayoutRounding="True" TextOptions.TextFormattingMode="Ideal">
+    <Window.Resources>
+        <cv:VisibilityConverter x:Key="Vis"/>
+        <cv:StatusLevelBrushConverter x:Key="LevelBrush"/>
+        <cv:ResourceLookupConverter x:Key="IconLookup"/>
+
+        <DataTemplate DataType="{x:Type vm:DashboardViewModel}"><v:DashboardView/></DataTemplate>
+        <DataTemplate DataType="{x:Type vm:DesignEditorViewModel}"><v:DesignEditorView/></DataTemplate>
+        <DataTemplate DataType="{x:Type vm:ThemeViewModel}"><v:ThemesView/></DataTemplate>
+        <DataTemplate DataType="{x:Type vm:MonitorViewModel}"><v:MonitorsView/></DataTemplate>
+        <DataTemplate DataType="{x:Type vm:SettingsViewModel}"><v:SettingsView/></DataTemplate>
+        <DataTemplate DataType="{x:Type vm:AboutViewModel}"><v:AboutView/></DataTemplate>
+
+        <Style x:Key="NavIconStyle" TargetType="c:Icon">
+            <Setter Property="Width" Value="20"/><Setter Property="Height" Value="20"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid Background="{StaticResource WindowGradient}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="236"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- ============ Seitenleiste ============ -->
+        <Border Background="{StaticResource SidebarBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="0,0,1,0">
+            <DockPanel Margin="16,22,16,16">
+                <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="6,0,0,26">
+                    <c:BrandMark Width="44" Height="44"/>
+                    <StackPanel Margin="12,0,0,0" VerticalAlignment="Center">
+                        <TextBlock Text="Break Timer" FontSize="20" FontWeight="Bold" Foreground="White"/>
+                        <TextBlock Text="CONTROL CENTER" FontSize="10.5" FontWeight="SemiBold" Foreground="{StaticResource AccentBrush}"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <Border DockPanel.Dock="Bottom" Background="{StaticResource Surface2Brush}" CornerRadius="12" Padding="14,12">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Ellipse Width="9" Height="9" Margin="0,0,9,0" VerticalAlignment="Center" Fill="{Binding Timer.StatusLevel, Converter={StaticResource LevelBrush}}"/>
+                            <TextBlock Text="{Binding Timer.StatusText}" FontWeight="SemiBold"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                            <Ellipse Width="9" Height="9" Margin="0,0,9,0" VerticalAlignment="Top" Fill="{Binding Timer.DisplayStatusLevel, Converter={StaticResource LevelBrush}}"/>
+                            <TextBlock Text="{Binding Timer.DisplayStatusText}" TextWrapping="Wrap" Foreground="{StaticResource TextDimBrush}" FontSize="12" MaxWidth="160"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <ItemsControl ItemsSource="{Binding Navigation}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <RadioButton Style="{StaticResource NavButton}" GroupName="Nav" IsChecked="{Binding IsSelected, Mode=OneWay}"
+                                         Command="{Binding DataContext.NavigateCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}">
+                                <StackPanel Orientation="Horizontal">
+                                    <c:Icon Style="{StaticResource NavIconStyle}" Data="{Binding Icon, Converter={StaticResource IconLookup}}" Margin="0,0,14,0"/>
+                                    <TextBlock Text="{Binding Title}"/>
+                                </StackPanel>
+                            </RadioButton>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </DockPanel>
+        </Border>
+
+        <!-- ============ Inhalt ============ -->
+        <Grid Grid.Column="1" Margin="28,24,28,20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Meldungen -->
+            <Border Grid.Row="0" CornerRadius="10" Padding="16,10" Margin="0,0,0,14" Visibility="{Binding HasBanner, Converter={StaticResource Vis}}">
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Setter Property="Background" Value="#33189CFF"/>
+                        <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
+                        <Setter Property="BorderThickness" Value="1"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding BannerLevelName}" Value="Warning">
+                                <Setter Property="Background" Value="#33FFB84D"/><Setter Property="BorderBrush" Value="{StaticResource WarnBrush}"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding BannerLevelName}" Value="Error">
+                                <Setter Property="Background" Value="#44FF3B63"/><Setter Property="BorderBrush" Value="{StaticResource DangerBrush}"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <DockPanel>
+                    <Button DockPanel.Dock="Right" Style="{StaticResource GhostButton}" Padding="8,4" MinHeight="28" BorderThickness="0" Command="{Binding DismissBannerCommand}" ToolTip="Schließen">
+                        <c:Icon Data="{StaticResource IconClose}" Width="14" Height="14"/>
+                    </Button>
+                    <TextBlock Text="{Binding BannerText}" TextWrapping="Wrap" VerticalAlignment="Center"/>
+                </DockPanel>
+            </Border>
+
+            <ContentControl Grid.Row="1" Content="{Binding CurrentPage}" Focusable="False"/>
+
+            <!-- ============ Transportleiste: immer sichtbar, STOP jederzeit erreichbar ============ -->
+            <Border Grid.Row="2" Style="{StaticResource Card}" Margin="0,18,0,0" Padding="22,14">
+                <Grid DataContext="{Binding Timer}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <Ellipse Width="12" Height="12" Margin="0,0,14,0" Fill="{Binding StatusLevel, Converter={StaticResource LevelBrush}}"/>
+                        <StackPanel>
+                            <TextBlock Text="{Binding StatusText}" FontWeight="SemiBold" FontSize="15"/>
+                            <TextBlock Style="{StaticResource Dim}" FontSize="12.5">
+                                <Run Text="Ende ca. "/><Run Text="{Binding EndTimeText, Mode=OneWay}"/>
+                            </TextBlock>
+                        </StackPanel>
+                        <TextBlock Text="{Binding RemainingText}" Margin="26,0,0,0" FontFamily="Bahnschrift, Segoe UI" FontWeight="Light" FontSize="44" VerticalAlignment="Center" Foreground="White"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" Orientation="Horizontal">
+                        <Button Style="{StaticResource BigButton}" Command="{Binding StartCommand}" Margin="0,0,12,0" ToolTip="Start (Leertaste)">
+                            <Button.Visibility>
+                                <Binding Path="IsPaused" Converter="{StaticResource Vis}" ConverterParameter="invert"/>
+                            </Button.Visibility>
+                            <StackPanel Orientation="Horizontal"><c:Icon Data="{StaticResource IconPlay}" Width="22" Height="22" Margin="0,0,10,0"/><TextBlock Text="START"/></StackPanel>
+                        </Button>
+                        <Button Style="{StaticResource BigButton}" Command="{Binding ResumeCommand}" Margin="0,0,12,0" ToolTip="Fortsetzen (Leertaste)"
+                                Visibility="{Binding IsPaused, Converter={StaticResource Vis}}">
+                            <StackPanel Orientation="Horizontal"><c:Icon Data="{StaticResource IconPlay}" Width="22" Height="22" Margin="0,0,10,0"/><TextBlock Text="FORTSETZEN"/></StackPanel>
+                        </Button>
+                        <Button Style="{StaticResource BigNeutralButton}" Command="{Binding PauseCommand}" Margin="0,0,12,0" ToolTip="Pause (Leertaste)"
+                                Visibility="{Binding IsPaused, Converter={StaticResource Vis}, ConverterParameter=invert}">
+                            <StackPanel Orientation="Horizontal"><c:Icon Data="{StaticResource IconPause}" Width="22" Height="22" Margin="0,0,10,0"/><TextBlock Text="PAUSE"/></StackPanel>
+                        </Button>
+                        <Button Style="{StaticResource BigDangerButton}" Command="{Binding StopCommand}" Margin="0,0,12,0" ToolTip="Stop (Esc)">
+                            <StackPanel Orientation="Horizontal"><c:Icon Data="{StaticResource IconStop}" Width="22" Height="22" Margin="0,0,10,0"/><TextBlock Text="STOP"/></StackPanel>
+                        </Button>
+                        <Button Style="{StaticResource BigNeutralButton}" Command="{Binding ResetCommand}" ToolTip="Zurücksetzen (Strg+R)">
+                            <StackPanel Orientation="Horizontal"><c:Icon Data="{StaticResource IconReset}" Width="20" Height="20" Margin="0,0,10,0"/><TextBlock Text="RESET"/></StackPanel>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</Window>
