@@ -14,11 +14,17 @@ Vollbild-Countdown auf dem Beamer – Steuerung bequem am eigenen Bildschirm.
 
 </div>
 
-<!--
-  Screenshots hier einfügen, z. B.:
-  ![Break Display](docs/screenshots/display.png)
-  ![Control Center](docs/screenshots/control-center.png)
--->
+<p align="center">
+  <img src="docs/screenshots/display.png" alt="Break Display im Vollbild" width="860">
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/control-center.png" alt="Control Center – Dashboard" width="420">
+  &nbsp;
+  <img src="docs/screenshots/design-editor.png" alt="Design Editor mit Live-Vorschau" width="420">
+</p>
+
+<p align="center"><sub>Break Display (oben), Control Center mit Dashboard und Design Editor (unten)</sub></p>
 
 ---
 

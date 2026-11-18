@@ -142,8 +142,8 @@ public sealed class AboutViewModel : ViewModelBase
     public string DevelopedBy => "Entwickelt von " + Author;
     public string Copyright => "© " + DateTime.Now.Year + " " + Author;
 
-    /// <summary>GitHub-Repository. Leer lassen, solange es keins gibt – dann wird kein Link angezeigt.</summary>
-    public string RepositoryUrl { get; } = "";
+    /// <summary>GitHub-Repository. Bei leerem Wert wird kein Link angezeigt.</summary>
+    public string RepositoryUrl { get; } = "https://github.com/PetreHoffmann/BreakTimer";
     public bool HasRepository => !string.IsNullOrWhiteSpace(RepositoryUrl);
     public ICommand OpenRepositoryCommand => new RelayCommand(() => OpenUrl(RepositoryUrl));
     public ICommand OpenUrlCommand { get; } = new RelayCommand(p => OpenUrl(p as string));
