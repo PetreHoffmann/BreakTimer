@@ -42,6 +42,7 @@ public sealed class AppServices : IDisposable
     public MainWindow Window { get; private set; }
 
     private MiniControlPresenter _mini;
+    private KeepAwakeService _keepAwake;
 
     public void Start()
     {
@@ -103,6 +104,8 @@ public sealed class AppServices : IDisposable
         Monitors.MonitorsChanged += (s, e) => Main.ShowNotice("Die Monitorkonfiguration hat sich geändert (" + Monitors.Monitors.Count + " Monitor(e) erkannt).", NoticeLevel.Info);
 
         _mini = new MiniControlPresenter(Display, timerVm);
+        _keepAwake = new KeepAwakeService(Display, Settings);
+        settingsVm.KeepAwakeChanged = () => _keepAwake.Update();
 
         Window = new MainWindow(Main, Monitors, id =>
         {
@@ -135,6 +138,7 @@ public sealed class AppServices : IDisposable
         Design.Rebind(source);
         Timer.SetDuration(TimeSpan.FromSeconds(Settings.DurationSeconds));
         Main.Timer.SyncInputs();
+        _keepAwake?.Update();
     }
 
     private void Shutdown()
@@ -146,6 +150,7 @@ public sealed class AppServices : IDisposable
 
     public void Dispose()
     {
+        try { _keepAwake?.Release(); } catch { }
         try { Monitors?.Dispose(); } catch { }
         try { Timer?.Dispose(); } catch { }
     }

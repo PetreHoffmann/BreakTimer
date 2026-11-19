@@ -51,6 +51,7 @@ Beide lesen denselben Zustand eines einzigen, stopwatch-basierten Timers – Anz
 | ✨ **Animationen** | Bewegter Hintergrund, Lichtschweif, Partikel, rotierende Grafik (Geschwindigkeit einstellbar), Übergänge – alle optional, mit Hauptschalter |
 | 🎞️ **Lottie-Animationen** | Eigene `.json`-Lottie-Dateien (z. B. aus After Effects / LottieFiles) als Ebene hinter oder vor dem Inhalt, per SkiaSharp/Skottie |
 | 🔔 **Signalton** | Chime, Bell, Gong, Beeps oder eigene Audiodatei, Lautstärke, Test-Knopf |
+| 🌙 **Wach halten** | Solange das Display offen ist, bleiben Monitor und PC wach (kein Bildschirmschoner, kein Standby); in den Einstellungen abschaltbar |
 | 💾 **Robuste Speicherung** | JSON in `%AppData%`, atomares Schreiben, Sicherung, beschädigte Dateien werden aussortiert statt Absturz; Import/Export/Standardwerte |
 
 ## Installation

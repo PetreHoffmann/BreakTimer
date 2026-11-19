@@ -29,6 +29,8 @@ public sealed class AppSettings
     public int DurationSeconds { get; set; } = 15 * 60;
     public bool CloseDisplayAfterFinish { get; set; }
     public int CloseDisplayDelaySeconds { get; set; } = 30;
+    /// <summary>Solange das Break Display offen ist: Bildschirm nicht ausschalten, keinen Bildschirmschoner/Energiesparmodus zulassen.</summary>
+    public bool KeepAwakeDuringBreak { get; set; } = true;
 
     // Design
     public string ActiveThemeId { get; set; } = BuiltInThemes.NeonFutureId;
@@ -48,7 +50,7 @@ public sealed class AppSettings
     {
         Version = o.Version;
         DisplayMonitorId = o.DisplayMonitorId; ControlMonitorId = o.ControlMonitorId;
-        DurationSeconds = o.DurationSeconds; CloseDisplayAfterFinish = o.CloseDisplayAfterFinish; CloseDisplayDelaySeconds = o.CloseDisplayDelaySeconds;
+        DurationSeconds = o.DurationSeconds; CloseDisplayAfterFinish = o.CloseDisplayAfterFinish; CloseDisplayDelaySeconds = o.CloseDisplayDelaySeconds; KeepAwakeDuringBreak = o.KeepAwakeDuringBreak;
         ActiveThemeId = o.ActiveThemeId; AnimationsEnabled = o.AnimationsEnabled;
         SoundEnabled = o.SoundEnabled; SoundVolume = o.SoundVolume; SoundPreset = o.SoundPreset; CustomSoundPath = o.CustomSoundPath;
         if (o.CurrentDesign != null)

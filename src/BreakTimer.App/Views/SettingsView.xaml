@@ -31,6 +31,8 @@
                     <TextBlock Text="Darstellung &amp; Verhalten" Style="{StaticResource H2}"/>
                     <CheckBox Content="Animationen aktivieren (Hauptschalter für alle Bewegungen und Übergänge)" IsChecked="{Binding AnimationsEnabled}" Margin="0,14,0,0"/>
                     <TextBlock Text="Bei deaktivierten Animationen bleibt das Design vollständig erhalten – es bewegt sich nur nichts. Das spart Leistung auf schwächeren Rechnern." Style="{StaticResource Dim}" FontSize="12" TextWrapping="Wrap" Margin="52,4,0,0"/>
+                    <CheckBox Content="Bildschirm und PC während der Pause wach halten" IsChecked="{Binding KeepAwakeDuringBreak}" Margin="0,16,0,0"/>
+                    <TextBlock Text="Solange das Break Display offen ist, schaltet sich der Monitor nicht aus, und Bildschirmschoner und Energiesparmodus bleiben aus – dadurch sperrt sich Windows nicht wegen Inaktivität. Eine per Richtlinie erzwungene Sperre nach festgelegter Leerlaufzeit lässt sich so nicht in jedem Fall verhindern." Style="{StaticResource Dim}" FontSize="12" TextWrapping="Wrap" Margin="52,4,0,0"/>
                     <CheckBox Content="Display nach Ablauf der Pause automatisch schließen" IsChecked="{Binding CloseDisplayAfterFinish}" Margin="0,16,0,0"/>
                     <StackPanel Orientation="Horizontal" Margin="52,8,0,0" IsEnabled="{Binding CloseDisplayAfterFinish}">
                         <TextBlock Text="nach" Style="{StaticResource Dim}" VerticalAlignment="Center"/>

@@ -112,6 +112,15 @@ public sealed class SettingsViewModel : ViewModelBase
 
     public string CustomSoundDisplay => string.IsNullOrEmpty(_s.CustomSoundPath) ? "Keine Datei gewählt" : Path.GetFileName(_s.CustomSoundPath);
 
+    /// <summary>Wird aufgerufen, wenn sich "Bildschirm wach halten" ändert.</summary>
+    public Action KeepAwakeChanged { get; set; }
+
+    public bool KeepAwakeDuringBreak
+    {
+        get => _s.KeepAwakeDuringBreak;
+        set { _s.KeepAwakeDuringBreak = value; Raise(); _requestSave(); KeepAwakeChanged?.Invoke(); }
+    }
+
     public bool CloseDisplayAfterFinish
     {
         get => _s.CloseDisplayAfterFinish;
@@ -188,7 +197,7 @@ public sealed class SettingsViewModel : ViewModelBase
         // Working-Theme ist bereits aktualisiert (CopyFrom); die Quelle neu zu bestimmen ist Aufgabe von afterImport.
         _afterImport();
         foreach (string n in new[] { nameof(AnimationsEnabled), nameof(SoundEnabled), nameof(SoundVolumePercent), nameof(SoundPreset),
-            nameof(IsCustomSound), nameof(CustomSoundPath), nameof(CustomSoundDisplay), nameof(CloseDisplayAfterFinish), nameof(CloseDelayText) })
+            nameof(IsCustomSound), nameof(CustomSoundPath), nameof(CustomSoundDisplay), nameof(CloseDisplayAfterFinish), nameof(CloseDelayText), nameof(KeepAwakeDuringBreak) })
             Raise(n);
         _saveNow();
     }
